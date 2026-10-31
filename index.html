@@ -82,6 +82,13 @@
         <p id="curso-sub"></p>
       </div>
       <div id="curso-units"></div>
+      <section class="resources" id="curso-resources" aria-labelledby="res-title" hidden>
+        <div class="res-head">
+          <h2 id="res-title">Recursos de la clase</h2>
+          <button class="btn btn-primary teacher-only" id="btn-add-resource" type="button"><span class="ico" data-icon="plus"></span> Añadir recurso</button>
+        </div>
+        <div class="res-grid" id="res-list"></div>
+      </section>
     </main>
   </section>
 
@@ -225,6 +232,35 @@
     </form>
   </dialog>
 
+  <!-- ============ DIÁLOGO: AÑADIR RECURSO (docente) ============ -->
+  <dialog id="dlg-resource" aria-labelledby="dlg-res-title">
+    <form id="form-resource">
+      <h2 id="dlg-res-title">Añadir recurso</h2>
+      <label>Tipo
+        <select id="res-type">
+          <option value="file">Archivo (video, audio, PDF, imagen, documento)</option>
+          <option value="youtube">Video de YouTube (enlace)</option>
+          <option value="link">Otro enlace</option>
+        </select>
+      </label>
+      <label>Título <input id="res-title" required maxlength="120" autocomplete="off"></label>
+      <label>Descripción (opcional) <textarea id="res-desc" rows="2" maxlength="500"></textarea></label>
+      <div id="res-file-box">
+        <label>Archivo (máximo 50 MB)
+          <input id="res-file" type="file" accept="video/*,audio/*,image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip">
+        </label>
+      </div>
+      <div id="res-url-box" hidden>
+        <label>Enlace <input id="res-url" type="url" placeholder="https://…" autocomplete="off"></label>
+      </div>
+      <p id="res-msg" class="auth-msg" role="status"></p>
+      <div class="dlg-actions">
+        <button class="btn btn-ghost" type="button" id="res-cancel">Cancelar</button>
+        <button class="btn btn-primary" type="submit" id="res-save">Guardar recurso</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- ============ DIÁLOGO: CONFIGURAR KUNTUR (IA Gemini) ============ -->
   <dialog id="dlg-ai" aria-labelledby="dlg-ai-title">
     <form method="dialog" onsubmit="return false">
@@ -257,6 +293,7 @@
   <script src="js/gemini.js"></script>
   <script src="js/app.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/recursos.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/nivel1.js"></script>
   <script src="js/nivel2.js"></script>

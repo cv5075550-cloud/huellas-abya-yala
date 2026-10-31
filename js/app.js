@@ -11,7 +11,17 @@ const App = (() => {
   const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* sin almacenamiento */ } };
   const esc   = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const authOn = () => typeof Auth !== 'undefined' && Auth.active();
-  const allSubjects = () => DATA.subjects.concat(read(KEY.extra, []));
+  let remoteSubjects = [];       // asignaturas creadas por el docente (Supabase), visibles para todos
+  const allSubjects = () => DATA.subjects.concat(authOn() ? remoteSubjects : read(KEY.extra, []));
+  async function loadRemoteSubjects() {
+    if (!authOn() || Auth.needsLogin()) return;
+    try {
+      const rows = await Auth.api('/rest/v1/subjects?select=*&order=created_at.asc', { bearer: Auth.token() });
+      remoteSubjects = (rows || []).map(r => ({ id: r.id, name: r.name, grade: r.grade || '', teacher: 'Docente',
+        summary: r.summary || '', color: r.color || '#2f7f78', units: [] }));
+      if (currentScreen === 'aula') renderAula(); else if (currentScreen === 'curso') renderCurso();
+    } catch { /* sin conexión o sin SQL del Bloque 9: solo se muestran las asignaturas base */ }
+  }
 
   let currentSubject = null;
   let currentScreen = null;
@@ -77,8 +87,9 @@ const App = (() => {
   /* ---------- Página de la asignatura ---------- */
   function renderCurso() {
     const subjects = allSubjects();
-    const s = subjects.find(x => x.id === currentSubject) || subjects[0];
-    currentSubject = s.id;
+    const found = subjects.find(x => x.id === currentSubject);
+    const s = found || subjects[0];
+    if (found || !currentSubject) currentSubject = s.id;
     $('#curso-crumb').textContent = s.name;
     $('#curso-title').textContent = s.name;
     $('#curso-sub').textContent = s.summary || '';
@@ -93,6 +104,7 @@ const App = (() => {
           </a>`).join('')}
       </section>`).join('');
     $('#curso-units').innerHTML = units || '<p class="empty">Esta asignatura aún no tiene actividades.</p>';
+    if (typeof Recursos !== 'undefined') Recursos.render(s.id);
     ['#museo-back', '#inicio-back'].forEach(sel => { $(sel).href = '#curso:' + s.id; });
     injectIcons();
   }
@@ -192,6 +204,15 @@ const App = (() => {
       const name = (f.get('name') || '').trim();
       if (!name) { e.preventDefault(); return; }
       const colors = ['#2f7f78', '#c98a2e', '#7a4b8a', '#4a6fa5'];
+      if (authOn()) {      // con cuentas reales la asignatura se guarda en Supabase y la ven todos
+        e.preventDefault();
+        const data = { name, grade: (f.get('grade') || '').trim(), summary: (f.get('summary') || '').trim(),
+          color: colors[remoteSubjects.length % colors.length] };
+        Auth.api('/rest/v1/subjects', { method: 'POST', body: data, bearer: Auth.token(), headers: { Prefer: 'return=minimal' } })
+          .then(() => { dlg.close(); return loadRemoteSubjects(); })
+          .catch(err => alert('No se pudo guardar la asignatura: ' + err.message));
+        return;
+      }
       const extra = read(KEY.extra, []);
       extra.push({ id: 'x' + Date.now(), name, grade: (f.get('grade') || '').trim(), teacher: 'Docente',
         summary: (f.get('summary') || '').trim(), color: colors[extra.length % colors.length], units: [] });
@@ -218,6 +239,7 @@ const App = (() => {
     bind();
     setRole(authOn() ? Auth.role() : read(KEY.role, 'student'));
     route();
+    loadRemoteSubjects();
   }
   document.addEventListener('DOMContentLoaded', init);
   return api;

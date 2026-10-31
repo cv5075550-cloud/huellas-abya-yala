@@ -404,3 +404,20 @@ body.auth-on #btn-toggle-role{display:none}
 .auth-msg{min-height:1.3em;font-size:.88rem;color:#a2381f;margin-bottom:.6rem}
 .auth-msg[data-ok="1"]{color:#1f5f59}
 .logout{margin-left:.4rem}
+
+/* ---- Recursos de la clase · Bloque 9 ---- */
+.resources{margin-top:2rem}
+.res-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.res-card{background:#fff;border:1.5px solid var(--linea);border-radius:var(--radio);overflow:hidden;display:flex;flex-direction:column}
+.res-media{background:#2a1a12}
+.res-media video,.res-media iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
+.res-media img{display:block;width:100%;max-height:260px;object-fit:cover}
+.res-media audio{display:block;width:100%;padding:.6rem;background:var(--arena)}
+.res-body{padding:1rem;display:flex;flex-direction:column;gap:.35rem;flex:1}
+.res-body h3{font-size:1.05rem;color:var(--tierra)}
+.res-body p{font-size:.92rem;color:var(--suave)}
+.res-body small{color:var(--suave)}
+.res-body .tag{align-self:flex-start;font-size:.75rem;font-weight:700;background:var(--arena);color:var(--tierra);border-radius:99px;padding:.2rem .65rem}
+.res-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:auto;padding-top:.6rem}
+dialog select{display:block;width:100%;margin-top:.3rem;font:inherit;padding:.6rem .7rem;border:1.5px solid var(--linea);border-radius:10px;background:#fff}

@@ -28,16 +28,21 @@ const Auth = (() => {
     [/at least \d+ characters|password should/i, 'La contraseña debe tener al menos 6 caracteres.'],
     [/email not confirmed/i, 'Debes confirmar tu correo antes de ingresar (revisa tu bandeja).'],
     [/signups? (not allowed|are disabled)|signup is disabled/i, 'El registro de cuentas nuevas está desactivado. Pide tu cuenta al docente.'],
+    [/row-level security|violates|permission denied|not authorized/i, 'No tienes permiso para hacer esto (solo docentes).'],
+    [/exceeded the maximum allowed size|payload too large|too large/i, 'El archivo supera el tamaño máximo permitido (50 MB).'],
+    [/could not find the table|does not exist|bucket not found/i, 'Falta ejecutar el SQL del Bloque 9 en Supabase.'],
     [/rate limit|too many|429/i, 'Demasiados intentos. Espera un momento e inténtalo de nuevo.'],
     [/valid email|invalid format|unable to validate email/i, 'Escribe un correo válido.']
   ];
   const friendly = raw => (MSG.find(([re]) => re.test(raw)) || [0, raw || 'No se pudo completar la acción.'])[1];
 
-  async function api(path, { method = 'GET', body, bearer } = {}) {
-    const headers = { apikey: ANON, 'Content-Type': 'application/json' };
+  async function api(path, { method = 'GET', body, bearer, headers: extra, raw } = {}) {
+    const headers = { apikey: ANON };
+    if (!raw) headers['Content-Type'] = 'application/json';
     if (bearer) headers.Authorization = 'Bearer ' + bearer;
+    Object.assign(headers, extra);
     let res;
-    try { res = await fetch(BASE + path, { method, headers, body: body ? JSON.stringify(body) : undefined }); }
+    try { res = await fetch(BASE + path, { method, headers, body: raw ? raw : (body ? JSON.stringify(body) : undefined) }); }
     catch { throw new Error('No hay conexión con el servidor de cuentas.'); }
     let data = null;
     try { data = await res.json(); } catch { /* sin cuerpo */ }
@@ -172,5 +177,5 @@ const Auth = (() => {
   App.register('login', renderLogin);
   document.addEventListener('DOMContentLoaded', bindUI);
 
-  return { active, needsLogin, token, role, isTeacher, user, userId, name, signIn, signUp, signOut, api, ensureFresh };
+  return { baseUrl: () => BASE, active, needsLogin, token, role, isTeacher, user, userId, name, signIn, signUp, signOut, api, ensureFresh };
 })();
