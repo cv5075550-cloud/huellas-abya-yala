@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Huellas de Abya Yala</title>
+  <meta name="description" content="Expedición al primer poblamiento de América. Recurso educativo interactivo.">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/kuntur.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-role="student">
+  <a class="skip" href="#main">Saltar al contenido</a>
+
+  <!-- ============ INGRESO (cuentas docente / estudiante) ============ -->
+  <section id="screen-login" class="screen" aria-labelledby="login-title">
+    <main class="login-main">
+      <div class="login-card">
+        <img src="assets/icons/kuntur.svg" alt="" width="84" height="84">
+        <h1 id="login-title">Huellas de Abya Yala</h1>
+        <p class="muted">Ingresa a tu aula virtual</p>
+        <div class="login-tabs" role="tablist">
+          <button type="button" class="on" id="tab-login" role="tab" aria-selected="true">Ingresar</button>
+          <button type="button" id="tab-signup" role="tab" aria-selected="false">Crear cuenta de estudiante</button>
+        </div>
+        <form id="form-login" autocomplete="on">
+          <label>Correo <input id="login-email" name="email" type="email" required autocomplete="username"></label>
+          <label>Contraseña <input name="password" type="password" required autocomplete="current-password"></label>
+          <p id="login-msg" class="auth-msg" role="alert"></p>
+          <button class="btn btn-primary btn-lg" type="submit">Ingresar</button>
+        </form>
+        <form id="form-signup" hidden autocomplete="on">
+          <label>Nombre y apellido <input name="name" required maxlength="60" autocomplete="name"></label>
+          <label>Correo <input name="email" type="email" required autocomplete="email"></label>
+          <label>Contraseña (mínimo 6 caracteres) <input name="password" type="password" required minlength="6" autocomplete="new-password"></label>
+          <p id="signup-msg" class="auth-msg" role="alert"></p>
+          <button class="btn btn-primary btn-lg" type="submit">Crear cuenta</button>
+        </form>
+      </div>
+    </main>
+  </section>
+
+  <!-- ============ PANTALLA 1: AULA VIRTUAL (tipo Moodle) ============ -->
+  <section id="screen-aula" class="screen" aria-labelledby="aula-title">
+    <header class="lms-bar">
+      <div class="lms-brand"><span class="ico" data-icon="columns"></span><span>Aula Virtual Abya Yala</span></div>
+      <div class="lms-user"><span class="lms-avatar" aria-hidden="true">E</span><span id="user-label">Estudiante</span><button class="link-btn logout" type="button" data-logout hidden>Salir</button></div>
+    </header>
+
+    <main class="lms-main" id="main">
+      <div class="lms-head">
+        <div>
+          <h1 id="aula-title">Mis asignaturas</h1>
+          <p class="muted">Elige una asignatura para ver sus actividades.</p>
+        </div>
+        <!-- Solo visible con cuenta de docente (se activará con el login docente) -->
+        <button class="btn btn-primary teacher-only" id="btn-add-subject" type="button">
+          <span class="ico" data-icon="plus"></span> Añadir asignatura
+        </button>
+      </div>
+      <div class="course-grid" id="course-grid"></div>
+    </main>
+
+    <footer class="lms-foot">
+      <span>Aula Virtual Abya Yala</span>
+      <button class="link-btn" type="button" data-open-ai>Configurar Kuntur (<span class="ai-state">Reglas locales</span>)</button>
+      <button class="link-btn" id="btn-toggle-role" type="button">Cambiar a vista docente (temporal)</button>
+    </footer>
+  </section>
+
+  <!-- ============ PANTALLA 2: PÁGINA DE LA ASIGNATURA ============ -->
+  <section id="screen-curso" class="screen" aria-labelledby="curso-title">
+    <header class="lms-bar">
+      <div class="lms-brand"><span class="ico" data-icon="columns"></span><span>Aula Virtual Abya Yala</span></div>
+      <div class="lms-user"><span class="lms-avatar" aria-hidden="true">E</span><span class="user-label-copy">Estudiante</span><button class="link-btn logout" type="button" data-logout hidden>Salir</button></div>
+    </header>
+    <main class="lms-main">
+      <nav class="crumbs" aria-label="Ruta de navegación">
+        <a href="#aula">Mis asignaturas</a><span aria-hidden="true">/</span><span id="curso-crumb"></span>
+      </nav>
+      <div class="course-banner" id="curso-banner">
+        <h1 id="curso-title"></h1>
+        <p id="curso-sub"></p>
+      </div>
+      <div id="curso-units"></div>
+    </main>
+  </section>
+
+  <!-- ============ PANTALLA 3: PORTADA DE LA EXPEDICIÓN (INICIO) ============ -->
+  <section id="screen-inicio" class="screen" aria-labelledby="inicio-title">
+    <div class="portada">
+      <a class="back-link portada-back" id="inicio-back" href="#curso">&larr; Volver a la asignatura</a>
+      <div class="portada-body">
+        <div class="portada-text">
+          <h1 id="inicio-title">Huellas de Abya Yala</h1>
+          <p class="portada-sub">Expedición al primer poblamiento de América</p>
+          <p class="portada-lead">Eres cronista-arqueólogo junior. Con Kuntur, el cóndor cronista, reconstruirás el Mapa de la Gran Travesía superando tres retos.</p>
+          <div class="portada-actions">
+            <button class="btn btn-primary btn-lg" id="btn-comenzar" type="button">Comenzar expedición</button>
+            <button class="btn btn-ghost btn-lg" id="btn-continuar" type="button" hidden>Continuar partida</button>
+          </div>
+          <p class="portada-save" id="inicio-save" hidden></p>
+        </div>
+        <div class="portada-art">
+          <img src="assets/icons/kuntur.svg" alt="Kuntur, el cóndor cronista" width="300" height="300">
+        </div>
+      </div>
+      <div class="dunes" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- ============ PANTALLA 4: INSTRUCCIONES ============ -->
+  <section id="screen-instrucciones" class="screen" aria-labelledby="ins-title">
+    <main class="ins-main">
+      <h1 id="ins-title">Instrucciones de la expedición</h1>
+      <div class="ins-kuntur">
+        <img src="assets/icons/kuntur.svg" alt="" width="64" height="64">
+        <p><b>Kuntur:</b> Antes de salir, lee bien las reglas. Cada pista y cada intento cuentan para tu puntaje, así que piensa con calma.</p>
+      </div>
+      <div class="rules-grid">
+        <article class="rule"><span class="rule-ico" data-icon="map"></span>
+          <div><h2>La misión</h2>
+          <p>Reconstruye el Mapa de la Gran Travesía superando tres niveles: Campamento Beringia, Laboratorio del Tiempo y Gran Travesía al Sur.</p></div></article>
+        <article class="rule"><span class="rule-ico" data-icon="star"></span>
+          <div><h2>Puntos de Evidencia (PE)</h2>
+          <p>Cada nivel vale hasta 100 PE, para un total de 300. Tienes dos intentos por pregunta: si aciertas al primero ganas el 100 % del puntaje; si aciertas al segundo, el 50 %.</p></div></article>
+        <article class="rule"><span class="rule-ico" data-icon="bulb"></span>
+          <div><h2>Pistas de Kuntur</h2>
+          <p>Cada nivel tiene 3 pistas. Cada pista que uses resta 5 PE de ese nivel. Úsalas solo cuando de verdad las necesites.</p></div></article>
+        <article class="rule"><span class="rule-ico" data-icon="unlock"></span>
+          <div><h2>Desbloquear niveles</h2>
+          <p>Necesitas al menos 70 PE para abrir el siguiente nivel. Si no los alcanzas, puedes repetir el nivel; cuenta tu mejor puntaje.</p></div></article>
+        <article class="rule"><span class="rule-ico" data-icon="medal"></span>
+          <div><h2>Insignias y rangos</h2>
+          <p>Ganas una insignia al superar cada nivel: Brújula de Beringia, Cronómetro del Hielo y Cartógrafo del Sur. Tu rango final depende del total de PE:</p>
+          <ul class="rank-list" id="rank-list"></ul></div></article>
+        <article class="rule"><span class="rule-ico" data-icon="scroll"></span>
+          <div><h2>Completar la expedición</h2>
+          <p>Alcanza 70 PE o más en los tres niveles, consigue las tres insignias y entrega el Dictamen del Cronista.</p></div></article>
+      </div>
+      <div class="ins-actions">
+        <a class="btn btn-ghost" href="#inicio">&larr; Volver</a>
+        <button class="btn btn-primary btn-lg" id="btn-entrar" type="button">Entrar al museo</button>
+      </div>
+    </main>
+  </section>
+
+  <!-- ============ PANTALLA 5: MUSEO DE LA MEMORIA AMERICANA (menú de niveles) ============ -->
+  <section id="screen-museo" class="screen" aria-labelledby="museo-title">
+    <header class="museo-head">
+      <div class="museo-brand">
+        <span class="museo-logo" data-icon="columns"></span>
+        <div>
+          <h1 id="museo-title">Museo de la Memoria Americana</h1>
+          <p>Huellas de Abya Yala</p>
+        </div>
+      </div>
+      <div class="museo-tools">
+        <a class="back-link" href="#instrucciones">Instrucciones</a>
+        <button class="ai-btn" type="button" data-open-ai title="Configurar Kuntur (IA)">&#9881; Kuntur: <span class="ai-state">Reglas locales</span></button>
+        <a class="back-link" id="museo-back" href="#curso">&larr; Volver a la asignatura</a>
+        <button class="link-btn logout" type="button" data-logout hidden>Salir</button>
+        <button class="kuntur-btn" id="kuntur-btn" type="button" aria-label="Hablar con Kuntur" aria-expanded="false">
+          <img src="assets/icons/kuntur.svg" alt="" width="52" height="52">
+          <span>Kuntur</span>
+        </button>
+        <div class="kuntur-bubble" id="kuntur-bubble" role="status" hidden></div>
+      </div>
+    </header>
+
+    <main class="museo-main">
+      <section class="progress-block" aria-labelledby="prog-title">
+        <h2 id="prog-title">Progreso de la Expedición</h2>
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="300" aria-valuenow="0" id="prog-bar">
+          <div class="bar-fill" id="prog-fill"></div>
+        </div>
+        <p class="prog-text" id="prog-text">0 / 300 PE · 0%</p>
+      </section>
+
+      <section class="levels" id="levels" aria-label="Niveles de la expedición"></section>
+    </main>
+
+    <section class="badges-strip" aria-label="Insignias">
+      <ul id="badges"></ul>
+    </section>
+    <footer class="museo-foot" id="museo-foot"></footer>
+  </section>
+
+  <!-- ============ NIVEL 1 y su retroalimentación (se rellenan desde js/nivel1.js) ============ -->
+  <section id="screen-nivel1" class="screen" aria-label="Nivel 1: Campamento Beringia"></section>
+  <section id="screen-fb1" class="screen" aria-label="Retroalimentación del Nivel 1"></section>
+  <section id="screen-nivel2" class="screen" aria-label="Nivel 2: Laboratorio del Tiempo"></section>
+  <section id="screen-fb2" class="screen" aria-label="Retroalimentación del Nivel 2"></section>
+  <section id="screen-nivel3" class="screen" aria-label="Nivel 3: Gran Travesía al Sur"></section>
+  <section id="screen-fb3" class="screen" aria-label="Retroalimentación del Nivel 3"></section>
+
+  <!-- ============ DIÁLOGO: AÑADIR ASIGNATURA (docente) ============ -->
+  <dialog id="dlg-subject" aria-labelledby="dlg-title">
+    <form method="dialog" id="form-subject">
+      <h2 id="dlg-title">Añadir asignatura</h2>
+      <label>Nombre de la asignatura
+        <input name="name" required maxlength="60" autocomplete="off">
+      </label>
+      <label>Descripción breve
+        <textarea name="summary" rows="3" maxlength="160"></textarea>
+      </label>
+      <label>Curso o grado
+        <input name="grade" maxlength="30" placeholder="Ej.: 8.º EGB" autocomplete="off">
+      </label>
+      <div class="dlg-actions">
+        <button class="btn btn-ghost" type="button" id="dlg-cancel">Cancelar</button>
+        <button class="btn btn-primary" type="submit">Guardar asignatura</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ DIÁLOGO: EMPEZAR DE NUEVO ============ -->
+  <dialog id="dlg-confirm" aria-labelledby="dlg-confirm-title">
+    <form method="dialog">
+      <h2 id="dlg-confirm-title">¿Empezar una expedición nueva?</h2>
+      <p>Ya tienes una partida guardada. Si empiezas de nuevo, se borrarán tus puntos e insignias.</p>
+      <div class="dlg-actions">
+        <button class="btn btn-ghost" value="cancel">Cancelar</button>
+        <button class="btn btn-primary" value="ok">Empezar de nuevo</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ DIÁLOGO: CONFIGURAR KUNTUR (IA Gemini) ============ -->
+  <dialog id="dlg-ai" aria-labelledby="dlg-ai-title">
+    <form method="dialog" onsubmit="return false">
+      <h2 id="dlg-ai-title">Configurar Kuntur</h2>
+      <p class="ai-note">Opcional. Con una clave gratuita de <b>Google AI Studio</b>, Kuntur redacta pistas y comentarios con IA y evalúa el dictamen. Sin clave, usa sus reglas programadas y todo funciona igual.</p>
+      <label>Clave de API de Gemini
+        <input id="ai-key" type="password" autocomplete="off" spellcheck="false" placeholder="Pega aquí tu clave">
+      </label>
+      <label>Modelo
+        <input id="ai-model" autocomplete="off" spellcheck="false" placeholder="gemini-2.5-flash-lite">
+      </label>
+      <label class="chk"><input id="ai-enabled" type="checkbox" checked> Usar IA cuando haya clave</label>
+      <p class="ai-note">La clave se guarda solo en este navegador. No uses este equipo compartido con una clave personal.</p>
+      <p id="ai-msg" class="ai-msg" role="status"></p>
+      <div class="dlg-actions">
+        <button class="btn btn-ghost" type="button" id="ai-clear">Borrar clave</button>
+        <button class="btn btn-ghost" type="button" id="ai-test">Probar conexión</button>
+        <button class="btn btn-ghost" type="button" id="ai-close">Cerrar</button>
+        <button class="btn btn-primary" type="button" id="ai-save">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/kuntur.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/nivel1.js"></script>
+  <script src="js/nivel2.js"></script>
+  <script src="js/nivel3.js"></script>
+</body>
+</html>
