@@ -2,7 +2,7 @@
 const APP_CONFIG = {
   // URL de tu Worker de Cloudflare (guarda la clave de Gemini). Con esto Kuntur usa IA siempre.
   // Ejemplo: 'kuntur-proxy.cobenacarlos50.workers.dev'
-  AI_PROXY_URL: 'kuntur-proxy.cobenacarlos50.workers.dev',
+  AI_PROXY_URL: 'https://kuntur-proxy.cobenacarlos50.workers.dev',
   AI_MODEL: 'gemini-2.5-flash-lite',
 
   // Bloque 8 (cuentas y recursos): datos públicos de tu proyecto Supabase
